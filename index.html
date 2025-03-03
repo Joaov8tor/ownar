@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolher Time</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #121212;
+            color: white;
+            margin-top: 50px;
+        }
+        select, input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background: #1f80e0;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+        #codigo, #login, #registro, #aprovar, #listaJogadores {
+            margin-top: 20px;
+            font-weight: bold;
+            display: none;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #1e1e1e;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Escolha seu Time</h1>
+    <label for="times">Selecione um time:</label>
+    <select id="times">
+        <option value="Paris">Paris</option>
+        <option value="Barcelona">Barcelona</option>
+        <option value="Real Madrid">Real Madrid</option>
+        <option value="Manchester City">Manchester City</option>
+        <option value="Borrusia Dortmund">Borrusia Dortmund</option>
+        <option value="Milan">Milan</option>
+        <option value="Bayern Munich">Bayern Munich</option>
+        <option value="Al Nassr">Al Nassr</option>
+        <option value="Flamengo">Flamengo</option>
+        <option value="Corinthians">Corinthians</option>
+    </select>
+    <br>
+    
+    <h2>Registro de Jogador</h2>
+    <input type="text" id="nome" placeholder="Nome do Jogador">
+    <input type="text" id="habilidades" placeholder="Habilidades">
+    <button onclick="registrarJogador()">Registrar</button>
+    <p id="registro"></p>
+    
+    <h2>Login do Técnico</h2>
+    <input type="text" id="codigoLogin" placeholder="Digite o código do time">
+    <button onclick="verificarLogin()">Entrar</button>
+    <p id="login"></p>
+    
+    <h2>Lista de Jogadores Registrados</h2>
+    <ul id="listaJogadores"></ul>
+    
+    <script>
+        let tecnicoTime = "";
+        let jogadoresRegistrados = [];
+        
+        function verificarLogin() {
+            const codigoDigitado = document.getElementById("codigoLogin").value;
+            if (codigoDigitado === "LCYwsSP2vO") {
+                tecnicoTime = "Paris";
+                document.getElementById("login").innerText = "Login aprovado para o time Paris!";
+                document.getElementById("login").style.color = "green";
+                atualizarListaJogadores();
+            } else {
+                document.getElementById("login").innerText = "Código incorreto.";
+                document.getElementById("login").style.color = "red";
+            }
+        }
+        
+        function registrarJogador() {
+            const nome = document.getElementById("nome").value;
+            const habilidades = document.getElementById("habilidades").value;
+            const time = document.getElementById("times").value;
+            if (nome && habilidades) {
+                jogadoresRegistrados.push({ nome, habilidades, time, aprovado: false });
+                document.getElementById("registro").innerText = `Jogador ${nome} registrado para o time ${time} com habilidades: ${habilidades}`;
+                document.getElementById("registro").style.color = "blue";
+                atualizarListaJogadores();
+            } else {
+                document.getElementById("registro").innerText = "Preencha todos os campos.";
+                document.getElementById("registro").style.color = "red";
+            }
+        }
+        
+        function atualizarListaJogadores() {
+            const lista = document.getElementById("listaJogadores");
+            lista.innerHTML = "";
+            jogadoresRegistrados.forEach((jogador, index) => {
+                const item = document.createElement("li");
+                item.innerText = `${jogador.nome} - ${jogador.habilidades} - ${jogador.time} ${jogador.aprovado ? "(Aprovado pelo técnico)" : "(Pendente)"}`;
+                
+                if (tecnicoTime === jogador.time && !jogador.aprovado) {
+                    const botaoAprovar = document.createElement("button");
+                    botaoAprovar.innerText = "Aprovar";
+                    botaoAprovar.onclick = () => aprovarJogador(index);
+                    item.appendChild(botaoAprovar);
+                }
+                
+                lista.appendChild(item);
+            });
+        }
+        
+        function aprovarJogador(index) {
+            if (tecnicoTime === jogadoresRegistrados[index].time) {
+                jogadoresRegistrados[index].aprovado = true;
+                atualizarListaJogadores();
+            } else {
+                alert("Você só pode aprovar jogadores do seu próprio time.");
+            }
+        }
+    </script>
+</body>
+</html>
